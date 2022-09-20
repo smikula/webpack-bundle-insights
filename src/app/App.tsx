@@ -1,6 +1,7 @@
 import React, { CSSProperties } from 'react';
 import { Graph } from '../components/Graph';
 import { StatsPicker } from '../components/StatsPicker';
+import { deriveChunkGraph } from '../graph/deriveChunkGraph';
 import './App.css';
 
 const containerStyles: CSSProperties = {
@@ -27,7 +28,8 @@ const contentStyles: CSSProperties = {
 
 export const App: React.FC<{}> = () => {
     const onFileChanged = (data: any) => {
-        console.log(data);
+        const chunkGraph = deriveChunkGraph(data.bundleData);
+        console.log(chunkGraph);
     };
 
     const graph = {
