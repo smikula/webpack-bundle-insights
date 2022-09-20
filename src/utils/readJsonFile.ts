@@ -1,4 +1,4 @@
-export function readJsonFile<T = any>(file: File): Promise<any> {
+export function readJsonFile<T = any>(file: File): Promise<T> {
     return new Promise((resolve, reject) => {
         const fileReader = new FileReader();
 
