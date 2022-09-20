@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React, { CSSProperties, useEffect, useRef } from 'react';
 import { Data, Options, Network } from 'vis-network';
 
 export interface GraphProps {
     data: Data;
     options: Options;
+    styles?: CSSProperties;
 }
 
 export const Graph: React.FC<GraphProps> = props => {
@@ -15,6 +16,5 @@ export const Graph: React.FC<GraphProps> = props => {
         }
     });
 
-    const style = { width: '1000px', height: '800px' };
-    return <div ref={ref} style={style} />;
+    return <div ref={ref} style={props.styles} />;
 };
