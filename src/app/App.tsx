@@ -1,7 +1,9 @@
 import React, { CSSProperties } from 'react';
+import { Data } from 'vis-network';
 import { Graph } from '../components/Graph';
 import { StatsPicker } from '../components/StatsPicker';
-import { deriveChunkGraph } from '../graph/deriveChunkGraph';
+import { deriveBundleGraph } from '../graph/deriveBundleGraph';
+import { transformToVisNetwork } from '../graph/transformToVisNetwork';
 import './App.css';
 
 const containerStyles: CSSProperties = {
@@ -27,26 +29,14 @@ const contentStyles: CSSProperties = {
 };
 
 export const App: React.FC<{}> = () => {
-    const onFileChanged = (data: any) => {
-        const chunkGraph = deriveChunkGraph(data.bundleData);
-        console.log(chunkGraph);
-    };
+    const [graphData, setGraphData] = React.useState<Data>();
 
-    const graph = {
-        nodes: [
-            { id: 1, label: 'Node 1' },
-            { id: 2, label: 'Node 2' },
-            { id: 3, label: 'Node 3' },
-            { id: 4, label: 'Node 4' },
-            { id: 5, label: 'Node 5' },
-        ],
-        edges: [
-            { from: 1, to: 3 },
-            { from: 1, to: 2 },
-            { from: 2, to: 4 },
-            { from: 2, to: 5 },
-            { from: 3, to: 3 },
-        ],
+    const onFileChanged = (data: any) => {
+        const bundleGraph = deriveBundleGraph(data.bundleData);
+        console.log(bundleGraph);
+        const graphData = transformToVisNetwork(bundleGraph);
+        console.log(graphData);
+        setGraphData(graphData);
     };
 
     const graphOptions = {
@@ -69,7 +59,7 @@ export const App: React.FC<{}> = () => {
             <div style={sidebarStyles}>
                 <StatsPicker onFileChanged={onFileChanged} />
             </div>
-            <Graph data={graph} options={graphOptions} styles={contentStyles} />
+            <Graph data={graphData} options={graphOptions} styles={contentStyles} />
         </div>
     );
 };

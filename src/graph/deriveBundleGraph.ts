@@ -9,7 +9,7 @@ export interface BundleGraphNode {
     parents: Set<string>;
 }
 
-export function deriveChunkGraph(bundleData: BundleData) {
+export function deriveBundleGraph(bundleData: BundleData) {
     const moduleGraph = buildModuleGraph(bundleData);
     const bundleGraph: BundleGraph = new Map();
 
