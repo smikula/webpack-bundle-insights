@@ -32,7 +32,12 @@ export const App: React.FC<{}> = () => {
     const [graphData, setGraphData] = React.useState<Data>();
 
     const onFileChanged = (data: any) => {
-        const bundleGraph = deriveBundleGraph(data.bundleData);
+        // Hack to handle bespoke bundle data files
+        if (data.bundleData) {
+            data = data.bundleData;
+        }
+
+        const bundleGraph = deriveBundleGraph(data);
         console.log(bundleGraph);
         const graphData = transformToVisNetwork(bundleGraph);
         console.log(graphData);
