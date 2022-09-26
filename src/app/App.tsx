@@ -2,7 +2,7 @@ import React, { CSSProperties } from 'react';
 import { Data } from 'vis-network';
 import { Graph } from '../components/Graph';
 import { StatsPicker } from '../components/StatsPicker';
-import { deriveBundleGraphV2 } from '../graph/deriveBundleGraphV2';
+import { transformChunkGroupGraphToVisNetwork } from '../graph/transformChunkGroupGraphToVisNetwork';
 import './App.css';
 
 const containerStyles: CSSProperties = {
@@ -36,7 +36,9 @@ export const App: React.FC<{}> = () => {
             data = data.bundleData;
         }
 
-        deriveBundleGraphV2(data);
+        // deriveBundleGraphV2(data);
+        const newGraphData = transformChunkGroupGraphToVisNetwork(data);
+        setGraphData(newGraphData);
     };
 
     const graphOptions = {
