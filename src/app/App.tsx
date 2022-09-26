@@ -2,8 +2,7 @@ import React, { CSSProperties } from 'react';
 import { Data } from 'vis-network';
 import { Graph } from '../components/Graph';
 import { StatsPicker } from '../components/StatsPicker';
-import { deriveBundleGraph } from '../graph/deriveBundleGraph';
-import { transformToVisNetwork } from '../graph/transformToVisNetwork';
+import { deriveBundleGraphV2 } from '../graph/deriveBundleGraphV2';
 import './App.css';
 
 const containerStyles: CSSProperties = {
@@ -37,11 +36,7 @@ export const App: React.FC<{}> = () => {
             data = data.bundleData;
         }
 
-        const bundleGraph = deriveBundleGraph(data);
-        console.log(bundleGraph);
-        const graphData = transformToVisNetwork(bundleGraph);
-        console.log(graphData);
-        setGraphData(graphData);
+        deriveBundleGraphV2(data);
     };
 
     const graphOptions = {
