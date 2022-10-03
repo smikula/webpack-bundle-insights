@@ -2,7 +2,8 @@ import React, { CSSProperties } from 'react';
 import { Data } from 'vis-network';
 import { Graph } from '../components/Graph';
 import { StatsPicker } from '../components/StatsPicker';
-import { transformChunkGroupGraphToVisNetwork } from '../graph/transformChunkGroupGraphToVisNetwork';
+import { getBundleGraph } from '../graph/getBundleGraph';
+import { getVizNetworkFromBundleGraph } from '../graph/getVisNetworkFromBundleGraph';
 import './App.css';
 
 const containerStyles: CSSProperties = {
@@ -31,13 +32,8 @@ export const App: React.FC<{}> = () => {
     const [graphData, setGraphData] = React.useState<Data>();
 
     const onFileChanged = (data: any) => {
-        // Hack to handle bespoke bundle data files
-        if (data.bundleData) {
-            data = data.bundleData;
-        }
-
-        // deriveBundleGraphV2(data);
-        const newGraphData = transformChunkGroupGraphToVisNetwork(data);
+        const bundleGraph = getBundleGraph(data);
+        const newGraphData = getVizNetworkFromBundleGraph(bundleGraph);
         setGraphData(newGraphData);
     };
 
