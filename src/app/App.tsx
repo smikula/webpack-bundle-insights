@@ -2,6 +2,7 @@ import React, { CSSProperties } from 'react';
 import { Data } from 'vis-network';
 import { Graph } from '../components/Graph';
 import { StatsPicker } from '../components/StatsPicker';
+import { getAncestorFilter } from '../graph/getAncestorFilter';
 import { getBundleGraph } from '../graph/getBundleGraph';
 import { getVizNetworkFromBundleGraph } from '../graph/getVisNetworkFromBundleGraph';
 import './App.css';
@@ -32,8 +33,16 @@ export const App: React.FC<{}> = () => {
     const [graphData, setGraphData] = React.useState<Data>();
 
     const onFileChanged = (data: any) => {
+        console.log('Deriving bundle graph');
         const bundleGraph = getBundleGraph(data);
-        const newGraphData = getVizNetworkFromBundleGraph(bundleGraph);
+
+        console.log('Generating filter');
+        const filter = getAncestorFilter(bundleGraph, 'ReadingPane');
+
+        console.log('Getting viz network');
+        const newGraphData = getVizNetworkFromBundleGraph(bundleGraph, filter);
+
+        console.log('Updating graph');
         setGraphData(newGraphData);
     };
 
