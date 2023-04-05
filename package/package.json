@@ -1,0 +1,22 @@
+{
+  "name": "webpack-bundle-insights",
+  "description": "Insights into webpack bundle stats",
+  "version": "0.1.0",
+  "main": "./lib/index.js",
+  "typings": "./lib/index.d.ts",
+  "author": "Scott Mikula <mikula@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "yarn tsc"
+  },
+  "dependencies": {
+    "vis-network": "^9.1.6"
+  },
+  "devDependencies": {
+    "react": "^18.2.0",
+    "typescript": "^5.0.3"
+  },
+  "peerDependencies": {
+    "react": "^17 || ^18"
+  }
+}

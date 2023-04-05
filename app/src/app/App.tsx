@@ -1,6 +1,6 @@
 import React, { CSSProperties } from 'react';
 import { Data } from 'vis-network';
-import { Graph } from '../components/Graph';
+import { Graph } from 'webpack-bundle-insights';
 import { StatsPicker } from '../components/StatsPicker';
 import { getAncestorFilter } from '../graph/getAncestorFilter';
 import { getBundleGraph } from '../graph/getBundleGraph';
