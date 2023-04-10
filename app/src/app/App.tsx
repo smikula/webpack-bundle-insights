@@ -1,72 +1,26 @@
-import React, { CSSProperties } from 'react';
-import { Data } from 'vis-network';
-import { Graph } from 'webpack-bundle-insights';
+import React from 'react';
+import { BundleStats } from 'webpack-bundle-stats-plugin';
+import { BundleGraphExplorer } from 'webpack-bundle-insights';
 import { StatsPicker } from '../components/StatsPicker';
-import { getAncestorFilter } from '../graph/getAncestorFilter';
-import { getBundleGraph } from '../graph/getBundleGraph';
-import { getVizNetworkFromBundleGraph } from '../graph/getVisNetworkFromBundleGraph';
 import './App.css';
 
-const containerStyles: CSSProperties = {
-    position: 'relative',
-    minHeight: '100vh',
-};
-
-const sidebarStyles: CSSProperties = {
-    position: 'absolute',
-    top: '0',
-    left: '0',
-    backgroundColor: 'rgba(255,255,255,0.5)',
-    border: '1px solid #aaaaaa',
-    zIndex: 1,
-};
-
-const contentStyles: CSSProperties = {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-};
-
 export const App: React.FC<{}> = () => {
-    const [graphData, setGraphData] = React.useState<Data>();
+    const [stats, setStats] = React.useState<BundleStats>();
 
-    const onFileChanged = (data: any) => {
-        console.log('Deriving bundle graph');
-        const bundleGraph = getBundleGraph(data);
+    const onFileChanged = (stats: BundleStats) => {
+        if ((stats as any).bundleDataV2) {
+            stats = (stats as any).bundleDataV2;
+        }
 
-        console.log('Generating filter');
-        const filter = getAncestorFilter(bundleGraph, 'ReadingPane');
-
-        console.log('Getting viz network');
-        const newGraphData = getVizNetworkFromBundleGraph(bundleGraph, filter);
-
-        console.log('Updating graph');
-        setGraphData(newGraphData);
-    };
-
-    const graphOptions = {
-        layout: {
-            hierarchical: {
-                enabled: true,
-                levelSeparation: 75,
-                nodeSpacing: 150,
-                blockShifting: true,
-                edgeMinimization: true,
-                direction: 'DU',
-                sortMethod: 'directed',
-                shakeTowards: 'leaves',
-            },
-        },
+        setStats(stats);
     };
 
     return (
-        <div style={containerStyles}>
-            <div style={sidebarStyles}>
+        <div className="container">
+            <div className="sidebar">
                 <StatsPicker onFileChanged={onFileChanged} />
             </div>
-            <Graph data={graphData} options={graphOptions} styles={contentStyles} />
+            <BundleGraphExplorer stats={stats} className="graph" />
         </div>
     );
 };

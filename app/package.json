@@ -20,7 +20,8 @@
     "webpack-bundle-insights": "0.1.0"
   },
   "devDependencies": {
-    "webpack-bundle-diff": "^1.1.0"
+    "webpack-bundle-diff": "^1.1.0",
+    "webpack-bundle-stats-plugin": "^0.2.0"
   },
   "scripts": {
     "start": "react-scripts start",

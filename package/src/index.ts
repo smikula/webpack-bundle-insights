@@ -1,1 +1,5 @@
-export { Graph, GraphProps } from './components/Graph';
+export { Graph, GraphProps } from './core/Graph';
+export {
+    BundleGraphExplorer,
+    BundleGraphExplorerProps,
+} from './bundle-graph-explorer/BundleGraphExplorer';
