@@ -20,7 +20,7 @@ const graphOptions: Options = {
             edgeMinimization: true,
             direction: 'UD',
             sortMethod: 'directed',
-            shakeTowards: 'leaves',
+            shakeTowards: 'roots',
         },
     },
 };
