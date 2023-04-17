@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import type { Options } from 'vis-network';
 import type { BundleStats } from 'webpack-bundle-stats-plugin';
 import { Graph } from '../../core/Graph';
@@ -28,6 +28,10 @@ const graphOptions: Options = {
 export const BundleGraphExplorer: React.FC<BundleGraphExplorerProps> = props => {
     const [graphData, setGraphData] = useState<GraphData | undefined>(undefined);
     const [selectedNode, setSelectedNode] = useState<string | undefined>(undefined);
+    const [nodesInGraph, addNodeInGraph] = useReducer(
+        (state: string[], action: string) => [...state, action],
+        []
+    );
 
     // Recreate the graphData state every time we get new stats
     useEffect(() => {
@@ -48,7 +52,12 @@ export const BundleGraphExplorer: React.FC<BundleGraphExplorerProps> = props => 
     return (
         <div className={props.className}>
             <Graph options={graphOptions} data={graphData?.visData} onClick={onClick} />
-            <InfoPane data={graphData} selectedNode={selectedNode} />
+            <InfoPane
+                data={graphData}
+                selectedNode={selectedNode}
+                nodesInGraph={nodesInGraph}
+                onNodeAdded={addNodeInGraph}
+            />
         </div>
     );
 };

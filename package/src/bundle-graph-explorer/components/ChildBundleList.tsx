@@ -5,11 +5,12 @@ import { ChunkGroup } from 'webpack-bundle-stats-plugin';
 export interface ChildBundleListProps {
     data: GraphData | undefined;
     selectedNode: string | undefined;
+    nodesInGraph: string[];
     onClick: (chunkGroupId: string) => void;
 }
 
 export const ChildBundleList: React.FC<ChildBundleListProps> = props => {
-    const { data, selectedNode, onClick } = props;
+    const { data, selectedNode, nodesInGraph, onClick } = props;
 
     const childIds = useMemo(() => {
         if (!data || !selectedNode) {
@@ -31,6 +32,7 @@ export const ChildBundleList: React.FC<ChildBundleListProps> = props => {
                     <ChildBundle
                         key={c}
                         chunkGroup={data!.chunkGroupMap.get(c)!}
+                        isInGraph={nodesInGraph.includes(c)}
                         onClick={onClick}
                     />
                 ))}
@@ -41,6 +43,7 @@ export const ChildBundleList: React.FC<ChildBundleListProps> = props => {
 
 interface ChildBundleProps {
     chunkGroup: ChunkGroup;
+    isInGraph: boolean;
     onClick: (chunkGroupId: string) => void;
 }
 
@@ -49,6 +52,7 @@ const ChildBundle: React.FC<ChildBundleProps> = props => {
 
     return (
         <button
+            disabled={props.isInGraph}
             onClick={() => {
                 props.onClick(id);
             }}
