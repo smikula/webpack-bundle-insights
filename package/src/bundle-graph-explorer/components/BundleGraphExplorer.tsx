@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import type { Options } from 'vis-network';
 import type { BundleStats } from 'webpack-bundle-stats-plugin';
-import { Graph } from '../core/Graph';
-import { GraphData, getGraphData } from './getGraphData';
-import { addNodeChildren } from './addNodeChildren';
+import { Graph } from '../../core/Graph';
+import { GraphData, getGraphData } from '../getGraphData';
+import { InfoPane } from './InfoPane';
 
 export interface BundleGraphExplorerProps {
     stats?: BundleStats;
@@ -27,6 +27,7 @@ const graphOptions: Options = {
 
 export const BundleGraphExplorer: React.FC<BundleGraphExplorerProps> = props => {
     const [graphData, setGraphData] = useState<GraphData | undefined>(undefined);
+    const [selectedNode, setSelectedNode] = useState<string | undefined>(undefined);
 
     // Recreate the graphData state every time we get new stats
     useEffect(() => {
@@ -38,18 +39,16 @@ export const BundleGraphExplorer: React.FC<BundleGraphExplorerProps> = props => 
             if (params.nodes?.length === 1) {
                 const chunkGroupId = params.nodes[0];
                 console.log('Clicked on node:', chunkGroupId);
-                addNodeChildren(graphData, params.nodes[0]);
+                setSelectedNode(chunkGroupId);
             }
         },
         [graphData]
     );
 
     return (
-        <Graph
-            options={graphOptions}
-            data={graphData?.visData}
-            className={props.className}
-            onClick={onClick}
-        />
+        <div className={props.className}>
+            <Graph options={graphOptions} data={graphData?.visData} onClick={onClick} />
+            <InfoPane data={graphData} selectedNode={selectedNode} />
+        </div>
     );
 };

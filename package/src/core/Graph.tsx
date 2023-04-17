@@ -1,12 +1,19 @@
-import React, { useEffect, useRef } from 'react';
+import React, { CSSProperties, useEffect, useRef } from 'react';
 import { Data, Options, Network } from 'vis-network';
 
 export interface GraphProps {
     data?: Data;
     options: Options;
-    className?: string;
     onClick?: (params?: any) => void;
 }
+
+const graphStyles: CSSProperties = {
+    position: 'absolute',
+    top: '0px',
+    right: '0px',
+    bottom: '0px',
+    left: '0px',
+};
 
 export const Graph: React.FC<GraphProps> = props => {
     const ref = useRef<HTMLDivElement>(null);
@@ -14,9 +21,11 @@ export const Graph: React.FC<GraphProps> = props => {
     useEffect(() => {
         if (ref.current && props.data) {
             const network = new Network(ref.current, props.data, props.options);
-            network.on('click', props.onClick);
+            if (props.onClick) {
+                network.on('click', props.onClick);
+            }
         }
     }, [props.data, props.options, props.onClick]);
 
-    return <div ref={ref} className={props.className} />;
+    return <div ref={ref} style={graphStyles} />;
 };

@@ -6,7 +6,7 @@ export function getEntryBundles(chunkGroupMap: ChunkGroupMap) {
     // Filter out those that are the child of another
     for (let cg of chunkGroupMap.values()) {
         for (let childId of cg.children) {
-            possibleEntryBundles.delete(chunkGroupMap.get(childId));
+            possibleEntryBundles.delete(chunkGroupMap.get(childId)!);
         }
     }
 
