@@ -21,6 +21,18 @@ export const ChildBundleList: React.FC<ChildBundleListProps> = props => {
 
         // Filter out duplicate children
         const childIds = [...new Set(chunkGroup.children)];
+
+        // Sort by name first, then ID
+        childIds.sort((a, b) => {
+            const a2 = data.chunkGroupMap.get(a)!;
+            const b2 = data.chunkGroupMap.get(b)!;
+            if (a2.name) {
+                return b2.name ? a2.name.localeCompare(b2.name) : -1;
+            } else {
+                return b2.name ? 1 : a2.id.localeCompare(b2.id);
+            }
+        });
+
         return childIds;
     }, [data, selectedNode]);
 
