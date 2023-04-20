@@ -1,7 +1,6 @@
-import React, { CSSProperties, useCallback } from 'react';
+import React, { CSSProperties } from 'react';
 import { GraphData } from '../getGraphData';
 import { ChildBundleList } from './ChildBundleList';
-import { addChunkGroupToGraph } from '../addChunkGroupToGraph';
 
 export interface InfoPaneProps {
     data: GraphData | undefined;
@@ -18,18 +17,11 @@ const paneStyles: CSSProperties = {
     width: '20%',
     minWidth: '200px',
     backgroundColor: 'rgba(255,255,255,0.5)',
+    overflow: 'hidden',
 };
 
 export const InfoPane: React.FC<InfoPaneProps> = props => {
     const { data, selectedNode } = props;
-
-    const onClick = useCallback(
-        (chunkGroupId: string) => {
-            addChunkGroupToGraph(data!, chunkGroupId, selectedNode!);
-            props.onNodeAdded(chunkGroupId);
-        },
-        [data, selectedNode]
-    );
 
     return (
         <div style={paneStyles}>
@@ -37,7 +29,7 @@ export const InfoPane: React.FC<InfoPaneProps> = props => {
                 data={data}
                 selectedNode={selectedNode}
                 nodesInGraph={props.nodesInGraph}
-                onClick={onClick}
+                onNodeAdded={props.onNodeAdded}
             />
         </div>
     );

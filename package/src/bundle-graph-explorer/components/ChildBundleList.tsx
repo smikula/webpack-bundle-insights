@@ -1,16 +1,17 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { GraphData } from '../getGraphData';
 import { ChunkGroup } from 'webpack-bundle-stats-plugin';
+import { addChunkGroupToGraph } from '../addChunkGroupToGraph';
 
 export interface ChildBundleListProps {
     data: GraphData | undefined;
     selectedNode: string | undefined;
     nodesInGraph: string[];
-    onClick: (chunkGroupId: string) => void;
+    onNodeAdded: (chunkGroupId: string) => void;
 }
 
 export const ChildBundleList: React.FC<ChildBundleListProps> = props => {
-    const { data, selectedNode, nodesInGraph, onClick } = props;
+    const { data, selectedNode, nodesInGraph, onNodeAdded } = props;
 
     const childIds = useMemo(() => {
         if (!data || !selectedNode) {
@@ -35,6 +36,14 @@ export const ChildBundleList: React.FC<ChildBundleListProps> = props => {
 
         return childIds;
     }, [data, selectedNode]);
+
+    const onClick = useCallback(
+        (chunkGroupId: string) => {
+            addChunkGroupToGraph(data!, chunkGroupId, selectedNode!);
+            onNodeAdded(chunkGroupId);
+        },
+        [data, selectedNode, onNodeAdded]
+    );
 
     return (
         <div>
