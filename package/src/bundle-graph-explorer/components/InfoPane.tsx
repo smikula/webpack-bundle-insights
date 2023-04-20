@@ -1,6 +1,7 @@
-import React, { CSSProperties } from 'react';
+import React, { useState, CSSProperties } from 'react';
 import { GraphData } from '../getGraphData';
 import { ChildBundleList } from './ChildBundleList';
+import { AnalysisPane } from './AnalysisPane';
 
 export interface InfoPaneProps {
     data: GraphData | undefined;
@@ -20,17 +21,38 @@ const paneStyles: CSSProperties = {
     overflow: 'hidden',
 };
 
+const tabStyles: CSSProperties = {
+    margin: '4px',
+};
+
 export const InfoPane: React.FC<InfoPaneProps> = props => {
     const { data, selectedNode } = props;
+    const [paneState, setPaneState] = useState<PaneState>('LOAD');
 
     return (
         <div style={paneStyles}>
-            <ChildBundleList
-                data={data}
-                selectedNode={selectedNode}
-                nodesInGraph={props.nodesInGraph}
-                onNodeAdded={props.onNodeAdded}
-            />
+            <div>
+                <button style={tabStyles} onClick={() => setPaneState('LOAD')}>
+                    Load bundles
+                </button>
+                <button style={tabStyles} onClick={() => setPaneState('ANALYZE')}>
+                    Analyze
+                </button>
+            </div>
+            <hr />
+
+            {paneState === 'LOAD' && (
+                <ChildBundleList
+                    data={data}
+                    selectedNode={selectedNode}
+                    nodesInGraph={props.nodesInGraph}
+                    onNodeAdded={props.onNodeAdded}
+                />
+            )}
+
+            {paneState === 'ANALYZE' && <AnalysisPane />}
         </div>
     );
 };
+
+type PaneState = 'LOAD' | 'ANALYZE';
