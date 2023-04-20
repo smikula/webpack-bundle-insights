@@ -18,7 +18,7 @@ const paneStyles: CSSProperties = {
     width: '20%',
     minWidth: '200px',
     backgroundColor: 'rgba(255,255,255,0.5)',
-    overflow: 'hidden',
+    overflow: 'auto',
 };
 
 const tabStyles: CSSProperties = {
