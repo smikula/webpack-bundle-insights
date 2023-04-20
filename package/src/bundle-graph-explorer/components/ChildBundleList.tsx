@@ -4,7 +4,7 @@ import { ChunkGroup } from 'webpack-bundle-stats-plugin';
 import { addChunkGroupToGraph } from '../addChunkGroupToGraph';
 
 export interface ChildBundleListProps {
-    data: GraphData | undefined;
+    data: GraphData;
     selectedNode: string | undefined;
     nodesInGraph: string[];
     onNodeAdded: (chunkGroupId: string) => void;

@@ -60,12 +60,14 @@ export const BundleGraphExplorer: React.FC<BundleGraphExplorerProps> = props => 
     return (
         <div className={props.className}>
             <Graph options={graphOptions} data={graphData?.visData} onClick={onClick} />
-            <InfoPane
-                data={graphData}
-                selectedNode={selectedNode}
-                nodesInGraph={nodesInGraph}
-                onNodeAdded={addNodeInGraph}
-            />
+            {graphData && (
+                <InfoPane
+                    graphData={graphData}
+                    selectedNode={selectedNode}
+                    nodesInGraph={nodesInGraph}
+                    onNodeAdded={addNodeInGraph}
+                />
+            )}
         </div>
     );
 };
