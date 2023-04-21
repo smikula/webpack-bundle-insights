@@ -34,11 +34,6 @@ const BundleDetails: React.FC<BundleDetailsProps> = props => {
     const label = chunkGroup.name || chunkGroup.id;
     const assets = [...assetSizes.keys()].sort();
 
-    // const duplicatedPercent = ((100 * duplicatedSize) / rawSize).toFixed(2);
-    // const duplicatedString = `Duplicate code: ${prettyBytes(duplicatedSize)} / ${prettyBytes(
-    //     rawSize
-    // )} (${duplicatedPercent}%)`;
-
     return (
         <div style={{ borderBottom: 'solid 1px #aaaaaa', margin: '8px' }}>
             <div style={{ fontWeight: 'bold' }}>{label}</div>
