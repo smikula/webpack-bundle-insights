@@ -19,7 +19,7 @@ export const AnalysisPane: React.FC<AnalysisPaneProps> = props => {
     return (
         <div>
             {bundleLoadingAnalysis.map(x => (
-                <BundleDetails data={x} />
+                <BundleDetails key={x.chunkGroup.id} data={x} />
             ))}
         </div>
     );
@@ -38,17 +38,30 @@ const BundleDetails: React.FC<BundleDetailsProps> = props => {
         <div>
             <div>{label}</div>
             <table style={{ margin: '6px', width: '100%' }}>
-                {assets.map(asset => {
-                    return (
-                        <tr>
-                            <td>{asset}</td>
-                            <td style={{ width: '150px' }}>
-                                {prettyBytes(assetSizes.get(asset)!)}
-                            </td>
-                        </tr>
-                    );
-                })}
+                <tbody>
+                    {assets.map(asset => (
+                        <AssetDetails key={asset} name={asset} netSize={assetSizes.get(asset)!} />
+                    ))}
+                </tbody>
             </table>
         </div>
+    );
+};
+
+interface AssetDetailsProps {
+    name: string;
+    netSize: number;
+}
+
+const AssetDetails: React.FC<AssetDetailsProps> = props => {
+    const { name, netSize } = props;
+    const sizeToShow = netSize > 0 ? prettyBytes(netSize) : '';
+    const color = netSize > 0 ? undefined : '#aaaaaa';
+
+    return (
+        <tr>
+            <td style={{ color }}>{name}</td>
+            <td style={{ width: '150px' }}>{sizeToShow}</td>
+        </tr>
     );
 };
