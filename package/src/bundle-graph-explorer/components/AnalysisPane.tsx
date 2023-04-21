@@ -30,35 +30,50 @@ interface BundleDetailsProps {
 }
 
 const BundleDetails: React.FC<BundleDetailsProps> = props => {
-    const { chunkGroup, assetSizes, netSize } = props.data;
+    const { chunkGroup, assetSizes, netAssetSize, rawSize, duplicatedSize } = props.data;
     const label = chunkGroup.name || chunkGroup.id;
     const assets = [...assetSizes.keys()].sort();
+
+    // const duplicatedPercent = ((100 * duplicatedSize) / rawSize).toFixed(2);
+    // const duplicatedString = `Duplicate code: ${prettyBytes(duplicatedSize)} / ${prettyBytes(
+    //     rawSize
+    // )} (${duplicatedPercent}%)`;
 
     return (
         <div style={{ borderBottom: 'solid 1px #aaaaaa', margin: '8px' }}>
             <div style={{ fontWeight: 'bold' }}>{label}</div>
-            <table style={{ margin: '6px', width: '100%' }}>
-                <tbody>
-                    {assets.map(asset => (
-                        <AssetDetails key={asset} name={asset} netSize={assetSizes.get(asset)!} />
-                    ))}
-                    <AssetDetails name="Total" netSize={netSize} bold />
-                </tbody>
-            </table>
+            <div style={{ margin: '6px' }}>
+                <table style={{ width: '100%' }}>
+                    <tbody>
+                        {assets.map(asset => (
+                            <AssetDetails
+                                key={asset}
+                                name={asset}
+                                netAssetSize={assetSizes.get(asset)!}
+                            />
+                        ))}
+                        <AssetDetails name="Total" netAssetSize={netAssetSize} bold />
+                    </tbody>
+                </table>
+                <div style={{ fontWeight: 'bold', marginTop: '6px' }}>
+                    Duplicated code: {prettyBytes(duplicatedSize)} / {prettyBytes(rawSize)} (
+                    {((100 * duplicatedSize) / rawSize).toFixed(2)}%)
+                </div>
+            </div>
         </div>
     );
 };
 
 interface AssetDetailsProps {
     name: string;
-    netSize: number;
+    netAssetSize: number;
     bold?: boolean;
 }
 
 const AssetDetails: React.FC<AssetDetailsProps> = props => {
-    const { name, netSize, bold } = props;
-    const sizeToShow = netSize > 0 ? prettyBytes(netSize) : '';
-    const color = netSize > 0 ? undefined : '#aaaaaa';
+    const { name, netAssetSize, bold } = props;
+    const sizeToShow = netAssetSize > 0 ? prettyBytes(netAssetSize) : '';
+    const color = netAssetSize > 0 ? undefined : '#aaaaaa';
     const fontWeight = bold ? 'bold' : undefined;
 
     return (
