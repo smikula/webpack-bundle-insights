@@ -11,16 +11,19 @@ export function analyzeBundleLoading(stats: BundleStats, chunkGroupIds: string[]
     for (let chunkGroupId of chunkGroupIds) {
         const chunkGroup = chunkGroupMap.get(chunkGroupId)!;
         const assetSizes = new Map<string, number>();
+        let netSize = 0;
+
         for (let chunkId of chunkGroup.chunks) {
             const chunk = chunkMap.get(chunkId)!;
             for (const filename of chunk.files) {
                 const addedSize = loadedAssets.has(filename) ? 0 : stats.assets[filename].size;
                 assetSizes.set(filename, addedSize);
                 loadedAssets.add(filename);
+                netSize += addedSize;
             }
         }
 
-        results.push({ chunkGroup, assetSizes });
+        results.push({ chunkGroup, assetSizes, netSize });
     }
 
     return results;
@@ -29,4 +32,5 @@ export function analyzeBundleLoading(stats: BundleStats, chunkGroupIds: string[]
 export interface BundleLoadingDetails {
     chunkGroup: ChunkGroup;
     assetSizes: Map<string, number>;
+    netSize: number;
 }
