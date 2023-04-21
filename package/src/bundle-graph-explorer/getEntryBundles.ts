@@ -1,4 +1,4 @@
-import type { ChunkGroupMap } from './getChunkGroupMap';
+import type { ChunkGroupMap } from '../utils/getChunkGroupMap';
 
 export function getEntryBundles(chunkGroupMap: ChunkGroupMap) {
     return [...chunkGroupMap.values()].filter(

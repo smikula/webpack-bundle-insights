@@ -1,7 +1,7 @@
 import { Data, Edge, Node } from 'vis-network';
 import { DataSet } from 'vis-data';
 import { BundleStats, ChunkGroup } from 'webpack-bundle-stats-plugin';
-import { getChunkGroupMap } from './getChunkGroupMap';
+import { getChunkGroupMap } from '../utils/getChunkGroupMap';
 import { getEntryBundles } from './getEntryBundles';
 
 export interface GraphData {
