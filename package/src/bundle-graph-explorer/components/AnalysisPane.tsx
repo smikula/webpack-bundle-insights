@@ -30,9 +30,9 @@ interface BundleDetailsProps {
 }
 
 const BundleDetails: React.FC<BundleDetailsProps> = props => {
-    const { chunkGroup, assetSizes, netAssetSize, rawSize, duplicatedSize } = props.data;
+    const { chunkGroup, assetDetails, netAssetSize, rawSize, duplicatedSize } = props.data;
     const label = chunkGroup.name || chunkGroup.id;
-    const assets = [...assetSizes.keys()].sort();
+    const assets = [...assetDetails.keys()].sort();
 
     return (
         <div style={{ borderBottom: 'solid 1px #aaaaaa', margin: '8px' }}>
@@ -44,7 +44,7 @@ const BundleDetails: React.FC<BundleDetailsProps> = props => {
                             <AssetDetails
                                 key={asset}
                                 name={asset}
-                                netAssetSize={assetSizes.get(asset)!}
+                                netAssetSize={assetDetails.get(asset)!.netSize}
                             />
                         ))}
                         <AssetDetails name="Total" netAssetSize={netAssetSize} bold />

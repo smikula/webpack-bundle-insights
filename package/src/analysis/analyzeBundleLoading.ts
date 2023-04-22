@@ -19,23 +19,25 @@ export function analyzeBundleLoading(stats: BundleStats, chunkGroupIds: string[]
     for (let chunkGroupId of chunkGroupIds) {
         const chunkGroup = chunkGroupMap.get(chunkGroupId)!;
 
-        // Track the size of the bundle assets (netSize excludes any that have already been
-        // downloaded as part of an earlier bundle)
-        const assetSizes = new Map<string, number>();
+        // Track the size of the bundle assets (netAssetSize excludes any that have already been
+        // downloaded as part of an earlier bundle).  This also tracks duplcated code per asset
+        // (the raw, unminified module sizes).
+        const assetDetails = new Map<string, AssetDetails>();
         let netAssetSize = 0;
 
-        // Track duplicated code (this is looking at the raw, unminified size of the modules)
+        // Track total duplicated code (this is looking at the raw, unminified size of the modules)
         let rawSize = 0;
         let duplicatedSize = 0;
 
         // Process each chunk in the bundle
         for (let chunkId of chunkGroup.chunks) {
             const chunk = chunkMap.get(chunkId)!;
+            const jsAsset = getJsAsset(chunk);
 
             // Accumulate chunk assets
             for (const filename of chunk.files) {
                 const addedSize = loadedAssets.has(filename) ? 0 : stats.assets[filename].size;
-                assetSizes.set(filename, addedSize);
+                assetDetails.set(filename, { netSize: addedSize, duplicatedCode: new Map() });
                 loadedAssets.add(filename);
                 netAssetSize += addedSize;
             }
@@ -46,7 +48,12 @@ export function analyzeBundleLoading(stats: BundleStats, chunkGroupIds: string[]
                 const moduleSizes = getModuleSizes(chunk);
                 for (let [moduleId, size] of moduleSizes.entries()) {
                     rawSize += size;
-                    duplicatedSize += loadedModules.has(moduleId) ? size : 0;
+
+                    if (loadedModules.has(moduleId)) {
+                        duplicatedSize += size;
+                        assetDetails.get(jsAsset)!.duplicatedCode.set(moduleId, size);
+                    }
+
                     loadedModules.add(moduleId);
                 }
 
@@ -54,7 +61,13 @@ export function analyzeBundleLoading(stats: BundleStats, chunkGroupIds: string[]
             }
         }
 
-        results.push({ chunkGroup, assetSizes, netAssetSize, rawSize, duplicatedSize });
+        results.push({
+            chunkGroup,
+            assetDetails,
+            netAssetSize,
+            rawSize,
+            duplicatedSize,
+        });
     }
 
     return results;
@@ -79,10 +92,24 @@ function getModuleSizes(chunk: Chunk) {
     return modules;
 }
 
+function getJsAsset(chunk: Chunk) {
+    const jsAssets = chunk.files.filter(f => f.endsWith('.js'));
+    if (jsAssets.length !== 1) {
+        throw new Error(`Expected exactly 1 JS asset for chunk ${chunk.id}`);
+    }
+
+    return jsAssets[0];
+}
+
 export interface BundleLoadingDetails {
     chunkGroup: ChunkGroup;
-    assetSizes: Map<string, number>;
+    assetDetails: Map<string, AssetDetails>;
     netAssetSize: number;
     rawSize: number;
     duplicatedSize: number;
+}
+
+export interface AssetDetails {
+    netSize: number;
+    duplicatedCode: Map<string, number>; // moduleId -> raw size
 }
