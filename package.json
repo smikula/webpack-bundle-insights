@@ -2,7 +2,8 @@
   "workspaces": ["app", "package"],
   "private": true,
   "scripts": {
-    "build": "yarn --cwd package build",
-    "start": "yarn --cwd app start"
+    "buildall": "yarn workspace webpack-bundle-insights build && yarn workspace webpack-bundle-insights-app build",
+    "build": "yarn workspace webpack-bundle-insights build",
+    "start": "yarn workspace webpack-bundle-insights-app start"
   }
 }
