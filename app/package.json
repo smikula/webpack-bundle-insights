@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "webpack-bundle-diff": "^1.1.0",
-    "webpack-bundle-stats-plugin": "^0.2.0"
+    "webpack-bundle-stats-plugin": "^0.3.0"
   },
   "scripts": {
     "start": "react-scripts start",

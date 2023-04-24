@@ -8972,10 +8972,10 @@ webpack-bundle-diff@^1.1.0:
     commander "^2.19.0"
     event-stream "3.3.4"
 
-webpack-bundle-stats-plugin@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/webpack-bundle-stats-plugin/-/webpack-bundle-stats-plugin-0.2.0.tgz#76eee501bde4803a3bc145d1b237f2b18ecc6639"
-  integrity sha512-RfrhTyi5/69kuEBFogeX9I+iaKaBsR7LledR3bg8h5lxLjcwZgG4t1JxlkBprkavEM8XQntZoirax4wLI8+Qgw==
+webpack-bundle-stats-plugin@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/webpack-bundle-stats-plugin/-/webpack-bundle-stats-plugin-0.3.0.tgz#d56f9a2f2f477711da14da2b483043a39080788c"
+  integrity sha512-Ho2dAf2B1KWnneJpanthQTTMr+UbWtIVSxnv8Hvqjp/kjhgmITWKAxx5DWFznGb87yuSCq2ejsrjP6NyRw4F8Q==
 
 webpack-dev-middleware@^5.3.1:
   version "5.3.3"
