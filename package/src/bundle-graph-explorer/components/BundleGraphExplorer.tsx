@@ -5,11 +5,15 @@ import { Graph } from '../../core/Graph';
 import { GraphData, getGraphData } from '../getGraphData';
 import { InfoPane } from './InfoPane';
 import { removeOtherEntryBundleNodes } from '../removeOtherEntryBundleNodes';
+import { InvalidVersionWarning } from '../../core/InvalidVersionWarning';
+import { isSupported } from '../../core/isSupported';
 
 export interface BundleGraphExplorerProps {
     stats?: BundleStats;
     className?: string;
 }
+
+const SUPPORTED_RANGE = '~0.3.0';
 
 const graphOptions: Options = {
     layout: {
@@ -27,6 +31,7 @@ const graphOptions: Options = {
 };
 
 export const BundleGraphExplorer: React.FC<BundleGraphExplorerProps> = props => {
+    const { stats, className } = props;
     const [graphData, setGraphData] = useState<GraphData | undefined>(undefined);
     const [selectedNode, setSelectedNode] = useState<string | undefined>(undefined);
     const [nodesInGraph, addNodeInGraph] = useReducer(
@@ -36,8 +41,8 @@ export const BundleGraphExplorer: React.FC<BundleGraphExplorerProps> = props => 
 
     // Recreate the graphData state every time we get new stats
     useEffect(() => {
-        setGraphData(props.stats && getGraphData(props.stats));
-    }, [props.stats]);
+        setGraphData(stats && getGraphData(stats));
+    }, [stats]);
 
     // Handle clicks on nodes
     const onClick = useCallback(
@@ -57,16 +62,24 @@ export const BundleGraphExplorer: React.FC<BundleGraphExplorerProps> = props => 
         [graphData, nodesInGraph]
     );
 
+    const isInvalidVersion = stats && !isSupported(stats, SUPPORTED_RANGE);
+
     return (
-        <div className={props.className}>
-            <Graph options={graphOptions} data={graphData?.visData} onClick={onClick} />
-            {graphData && (
-                <InfoPane
-                    graphData={graphData}
-                    selectedNode={selectedNode}
-                    nodesInGraph={nodesInGraph}
-                    onNodeAdded={addNodeInGraph}
-                />
+        <div className={className}>
+            {isInvalidVersion ? (
+                <InvalidVersionWarning validRange={SUPPORTED_RANGE} />
+            ) : (
+                <>
+                    <Graph options={graphOptions} data={graphData?.visData} onClick={onClick} />
+                    {graphData && (
+                        <InfoPane
+                            graphData={graphData}
+                            selectedNode={selectedNode}
+                            nodesInGraph={nodesInGraph}
+                            onNodeAdded={addNodeInGraph}
+                        />
+                    )}
+                </>
             )}
         </div>
     );
