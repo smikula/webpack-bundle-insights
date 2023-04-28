@@ -94,8 +94,8 @@ function getModuleSizes(chunk: Chunk) {
 
 function getJsAsset(chunk: Chunk) {
     const jsAssets = chunk.files.filter(f => f.endsWith('.js'));
-    if (jsAssets.length !== 1) {
-        throw new Error(`Expected exactly 1 JS asset for chunk ${chunk.id}`);
+    if (jsAssets.length > 1) {
+        throw new Error(`Expected 0 or 1 JS assets for chunk ${chunk.id}`);
     }
 
     return jsAssets[0];
