@@ -5,7 +5,7 @@ import { getChunkMap } from '../utils/getChunkMap';
 export function analyzeBundleLoading(stats: BundleStats, chunkGroupIds: string[]) {
     const chunkGroupMap = getChunkGroupMap(stats);
     const chunkMap = getChunkMap(stats);
-    const results: BundleLoadingDetails[] = [];
+    const bundleDetails: BundleLoadingDetails[] = [];
 
     // Keep track of assets that are loaded as each bundle loads; only the first time an asset
     // loads counts towards the bundle's net size
@@ -14,6 +14,12 @@ export function analyzeBundleLoading(stats: BundleStats, chunkGroupIds: string[]
     // Keep track of modules and chunks that are loaded
     const loadedChunks = new Set<ChunkId>();
     const loadedModules = new Set<string>();
+
+    // Keep track of total stats for the session
+    let totalRawSize = 0;
+    let totalDuplicatedSize = 0;
+    let totalModuleCount = 0; // TEMP?
+    let totalDuplicatedModuleCount = 0; // TEMP?
 
     // Process each bundle in order
     for (let chunkGroupId of chunkGroupIds) {
@@ -48,10 +54,14 @@ export function analyzeBundleLoading(stats: BundleStats, chunkGroupIds: string[]
                 const moduleSizes = getModuleSizes(chunk);
                 for (let [moduleId, size] of moduleSizes.entries()) {
                     rawSize += size;
+                    totalRawSize += size;
+                    totalModuleCount++;
 
                     if (loadedModules.has(moduleId)) {
                         duplicatedSize += size;
-                        assetDetails.get(jsAsset)!.duplicatedCode.set(moduleId, size);
+                        totalDuplicatedSize += size;
+                        totalDuplicatedModuleCount++;
+                        assetDetails.get(jsAsset)?.duplicatedCode.set(moduleId, size);
                     }
 
                     loadedModules.add(moduleId);
@@ -61,7 +71,7 @@ export function analyzeBundleLoading(stats: BundleStats, chunkGroupIds: string[]
             }
         }
 
-        results.push({
+        bundleDetails.push({
             chunkGroup,
             assetDetails,
             netAssetSize,
@@ -70,7 +80,13 @@ export function analyzeBundleLoading(stats: BundleStats, chunkGroupIds: string[]
         });
     }
 
-    return results;
+    return {
+        bundleDetails,
+        totalRawSize,
+        totalDuplicatedSize,
+        totalModuleCount,
+        totalDuplicatedModuleCount,
+    };
 }
 
 // Returns a map of chunkId -> raw size

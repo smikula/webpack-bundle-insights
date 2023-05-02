@@ -18,7 +18,7 @@ export const AnalysisPane: React.FC<AnalysisPaneProps> = props => {
 
     return (
         <div>
-            {bundleLoadingAnalysis.map(x => (
+            {bundleLoadingAnalysis.bundleDetails.map(x => (
                 <BundleDetails key={x.chunkGroup.id} data={x} />
             ))}
         </div>
