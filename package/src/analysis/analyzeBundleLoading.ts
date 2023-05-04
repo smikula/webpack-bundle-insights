@@ -18,8 +18,7 @@ export function analyzeBundleLoading(stats: BundleStats, chunkGroupIds: string[]
     // Keep track of total stats for the session
     let totalRawSize = 0;
     let totalDuplicatedSize = 0;
-    let totalModuleCount = 0; // TEMP?
-    let totalDuplicatedModuleCount = 0; // TEMP?
+    let totalAssetSize = 0;
 
     // Process each bundle in order
     for (let chunkGroupId of chunkGroupIds) {
@@ -46,6 +45,7 @@ export function analyzeBundleLoading(stats: BundleStats, chunkGroupIds: string[]
                 assetDetails.set(filename, { netSize: addedSize, duplicatedCode: new Map() });
                 loadedAssets.add(filename);
                 netAssetSize += addedSize;
+                totalAssetSize += addedSize;
             }
 
             // Check for duplicated code, but not in chunks that we've already loaded (we don't
@@ -55,12 +55,10 @@ export function analyzeBundleLoading(stats: BundleStats, chunkGroupIds: string[]
                 for (let [moduleId, size] of moduleSizes.entries()) {
                     rawSize += size;
                     totalRawSize += size;
-                    totalModuleCount++;
 
                     if (loadedModules.has(moduleId)) {
                         duplicatedSize += size;
                         totalDuplicatedSize += size;
-                        totalDuplicatedModuleCount++;
                         assetDetails.get(jsAsset)?.duplicatedCode.set(moduleId, size);
                     }
 
@@ -82,10 +80,9 @@ export function analyzeBundleLoading(stats: BundleStats, chunkGroupIds: string[]
 
     return {
         bundleDetails,
+        totalAssetSize,
         totalRawSize,
         totalDuplicatedSize,
-        totalModuleCount,
-        totalDuplicatedModuleCount,
     };
 }
 
