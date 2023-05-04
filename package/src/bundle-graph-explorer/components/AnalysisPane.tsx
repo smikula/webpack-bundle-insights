@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import prettyBytes from 'pretty-bytes';
 import { GraphData } from '../getGraphData';
-import { BundleLoadingDetails, analyzeBundleLoading } from '../../analysis/analyzeBundleLoading';
+import { BundleGroupDetails, analyzeBundleGroup } from '../../analysis/analyzeBundleGroup';
 
 interface AnalysisPaneProps {
     graphData: GraphData;
@@ -12,7 +12,7 @@ export const AnalysisPane: React.FC<AnalysisPaneProps> = props => {
     const { graphData, nodesInGraph } = props;
 
     const bundleLoadingAnalysis = useMemo(
-        () => analyzeBundleLoading(graphData.stats, nodesInGraph),
+        () => analyzeBundleGroup(graphData.stats, nodesInGraph),
         [graphData, nodesInGraph]
     );
 
@@ -26,7 +26,7 @@ export const AnalysisPane: React.FC<AnalysisPaneProps> = props => {
 };
 
 interface BundleDetailsProps {
-    data: BundleLoadingDetails;
+    data: BundleGroupDetails;
 }
 
 const BundleDetails: React.FC<BundleDetailsProps> = props => {

@@ -2,10 +2,10 @@ import { BundleStats, Chunk, ChunkGroup, ChunkId } from 'webpack-bundle-stats-pl
 import { getChunkGroupMap } from '../utils/getChunkGroupMap';
 import { getChunkMap } from '../utils/getChunkMap';
 
-export function analyzeBundleLoading(stats: BundleStats, chunkGroupIds: string[]) {
+export function analyzeBundleGroup(stats: BundleStats, chunkGroupIds: string[]) {
     const chunkGroupMap = getChunkGroupMap(stats);
     const chunkMap = getChunkMap(stats);
-    const bundleDetails: BundleLoadingDetails[] = [];
+    const bundleDetails: BundleGroupDetails[] = [];
 
     // Keep track of assets that are loaded as each bundle loads; only the first time an asset
     // loads counts towards the bundle's net size
@@ -114,7 +114,7 @@ function getJsAsset(chunk: Chunk) {
     return jsAssets[0];
 }
 
-export interface BundleLoadingDetails {
+export interface BundleGroupDetails {
     chunkGroup: ChunkGroup;
     assetDetails: Map<string, AssetDetails>;
     netAssetSize: number;
