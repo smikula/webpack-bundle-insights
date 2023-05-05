@@ -2,10 +2,10 @@ import { BundleStats, Chunk, ChunkGroup, ChunkId } from 'webpack-bundle-stats-pl
 import { getChunkGroupMap } from '../utils/getChunkGroupMap';
 import { getChunkMap } from '../utils/getChunkMap';
 
-export function analyzeBundleLoading(stats: BundleStats, chunkGroupIds: string[]) {
+export function analyzeBundleGroup(stats: BundleStats, chunkGroupIds: string[]) {
     const chunkGroupMap = getChunkGroupMap(stats);
     const chunkMap = getChunkMap(stats);
-    const results: BundleLoadingDetails[] = [];
+    const bundleDetails: BundleGroupDetails[] = [];
 
     // Keep track of assets that are loaded as each bundle loads; only the first time an asset
     // loads counts towards the bundle's net size
@@ -14,6 +14,11 @@ export function analyzeBundleLoading(stats: BundleStats, chunkGroupIds: string[]
     // Keep track of modules and chunks that are loaded
     const loadedChunks = new Set<ChunkId>();
     const loadedModules = new Set<string>();
+
+    // Keep track of total stats for the session
+    let totalRawSize = 0;
+    let totalDuplicatedSize = 0;
+    let totalAssetSize = 0;
 
     // Process each bundle in order
     for (let chunkGroupId of chunkGroupIds) {
@@ -40,6 +45,7 @@ export function analyzeBundleLoading(stats: BundleStats, chunkGroupIds: string[]
                 assetDetails.set(filename, { netSize: addedSize, duplicatedCode: new Map() });
                 loadedAssets.add(filename);
                 netAssetSize += addedSize;
+                totalAssetSize += addedSize;
             }
 
             // Check for duplicated code, but not in chunks that we've already loaded (we don't
@@ -48,10 +54,12 @@ export function analyzeBundleLoading(stats: BundleStats, chunkGroupIds: string[]
                 const moduleSizes = getModuleSizes(chunk);
                 for (let [moduleId, size] of moduleSizes.entries()) {
                     rawSize += size;
+                    totalRawSize += size;
 
                     if (loadedModules.has(moduleId)) {
                         duplicatedSize += size;
-                        assetDetails.get(jsAsset)!.duplicatedCode.set(moduleId, size);
+                        totalDuplicatedSize += size;
+                        assetDetails.get(jsAsset)?.duplicatedCode.set(moduleId, size);
                     }
 
                     loadedModules.add(moduleId);
@@ -61,7 +69,7 @@ export function analyzeBundleLoading(stats: BundleStats, chunkGroupIds: string[]
             }
         }
 
-        results.push({
+        bundleDetails.push({
             chunkGroup,
             assetDetails,
             netAssetSize,
@@ -70,7 +78,12 @@ export function analyzeBundleLoading(stats: BundleStats, chunkGroupIds: string[]
         });
     }
 
-    return results;
+    return {
+        bundleDetails,
+        totalAssetSize,
+        totalRawSize,
+        totalDuplicatedSize,
+    };
 }
 
 // Returns a map of chunkId -> raw size
@@ -101,7 +114,7 @@ function getJsAsset(chunk: Chunk) {
     return jsAssets[0];
 }
 
-export interface BundleLoadingDetails {
+export interface BundleGroupDetails {
     chunkGroup: ChunkGroup;
     assetDetails: Map<string, AssetDetails>;
     netAssetSize: number;
