@@ -3,7 +3,7 @@ import type { Options } from 'vis-network';
 import type { BundleStats } from 'webpack-bundle-stats-plugin';
 import { Graph } from '../../core/Graph';
 import { GraphData, getGraphData } from '../getGraphData';
-import { InfoPane } from './InfoPane';
+import { InfoPane } from './info-pane/InfoPane';
 import { removeOtherEntryBundleNodes } from '../removeOtherEntryBundleNodes';
 import { InvalidVersionWarning } from '../../core/InvalidVersionWarning';
 import { isSupported } from '../../core/isSupported';

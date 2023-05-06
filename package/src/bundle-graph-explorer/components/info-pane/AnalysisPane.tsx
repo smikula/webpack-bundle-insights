@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import prettyBytes from 'pretty-bytes';
-import { GraphData } from '../getGraphData';
-import { BundleGroupDetails, analyzeBundleGroup } from '../../analysis/analyzeBundleGroup';
+import { GraphData } from '../../getGraphData';
+import { BundleGroupDetails, analyzeBundleGroup } from '../../../analysis/analyzeBundleGroup';
 
 interface AnalysisPaneProps {
     graphData: GraphData;
