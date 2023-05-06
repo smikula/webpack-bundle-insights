@@ -121,7 +121,7 @@ function getJsAsset(chunk: Chunk) {
 
 function getAssetType(filename: string) {
     const split = filename.split('.');
-    return split.length < 2 ? 'Unknown' : split[split.length - 1];
+    return split.length < 2 ? 'Unknown' : split[split.length - 1].toUpperCase();
 }
 
 export interface BundleAnalysis {
