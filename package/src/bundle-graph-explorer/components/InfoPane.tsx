@@ -1,7 +1,7 @@
 import React, { useState, CSSProperties } from 'react';
-import { GraphData } from '../../getGraphData';
-import { ChildBundleList } from '../ChildBundleList';
-import { AnalysisPane } from './AnalysisPane';
+import { GraphData } from '../getGraphData';
+import { ChildBundleList } from './ChildBundleList';
+import { AnalysisPane } from './analysis-pane/AnalysisPane';
 
 export interface InfoPaneProps {
     graphData: GraphData;
