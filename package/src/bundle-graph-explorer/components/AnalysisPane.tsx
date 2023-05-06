@@ -16,11 +16,24 @@ export const AnalysisPane: React.FC<AnalysisPaneProps> = props => {
         [graphData, nodesInGraph]
     );
 
+    const { totalAssetSize, totalRawSize, totalDuplicatedSize } = bundleLoadingAnalysis;
+    const fraction = totalDuplicatedSize / totalRawSize;
+    const totalDuplicatePercent = (100 * fraction).toFixed(2);
+
     return (
         <div>
-            {bundleLoadingAnalysis.bundleDetails.map(x => (
-                <BundleDetails key={x.chunkGroup.id} data={x} />
-            ))}
+            <div>
+                {bundleLoadingAnalysis.bundleDetails.map(x => (
+                    <BundleDetails key={x.chunkGroup.id} data={x} />
+                ))}
+            </div>
+            <div style={{ fontWeight: 'bold', margin: '8px' }}>
+                <div>Total asset size (minified): {prettyBytes(totalAssetSize)}</div>
+                <div>
+                    Duplicate code (unminified): {prettyBytes(totalDuplicatedSize)} /{' '}
+                    {prettyBytes(totalRawSize)} ({totalDuplicatePercent}%)
+                </div>
+            </div>
         </div>
     );
 };
