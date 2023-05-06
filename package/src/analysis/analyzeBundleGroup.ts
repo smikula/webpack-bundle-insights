@@ -2,7 +2,7 @@ import { BundleStats, Chunk, ChunkGroup, ChunkId } from 'webpack-bundle-stats-pl
 import { getChunkGroupMap } from '../utils/getChunkGroupMap';
 import { getChunkMap } from '../utils/getChunkMap';
 
-export function analyzeBundleGroup(stats: BundleStats, chunkGroupIds: string[]) {
+export function analyzeBundleGroup(stats: BundleStats, chunkGroupIds: string[]): BundleAnalysis {
     const chunkGroupMap = getChunkGroupMap(stats);
     const chunkMap = getChunkMap(stats);
     const bundleDetails: BundleGroupDetails[] = [];
@@ -112,6 +112,13 @@ function getJsAsset(chunk: Chunk) {
     }
 
     return jsAssets[0];
+}
+
+export interface BundleAnalysis {
+    bundleDetails: BundleGroupDetails[];
+    totalAssetSize: number;
+    totalRawSize: number;
+    totalDuplicatedSize: number;
 }
 
 export interface BundleGroupDetails {
