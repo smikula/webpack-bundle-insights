@@ -17,7 +17,7 @@
     "vis-data": "^7.1.4",
     "vis-network": "^9.1.2",
     "web-vitals": "^2.1.4",
-    "webpack-bundle-insights": "0.1.0"
+    "webpack-bundle-insights": "0.1.1"
   },
   "devDependencies": {
     "webpack-bundle-diff": "^1.1.0",

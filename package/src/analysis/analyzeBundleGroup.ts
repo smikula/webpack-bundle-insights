@@ -2,7 +2,7 @@ import { BundleStats, Chunk, ChunkGroup, ChunkId } from 'webpack-bundle-stats-pl
 import { getChunkGroupMap } from '../utils/getChunkGroupMap';
 import { getChunkMap } from '../utils/getChunkMap';
 
-export function analyzeBundleGroup(stats: BundleStats, chunkGroupIds: string[]) {
+export function analyzeBundleGroup(stats: BundleStats, chunkGroupIds: string[]): BundleAnalysis {
     const chunkGroupMap = getChunkGroupMap(stats);
     const chunkMap = getChunkMap(stats);
     const bundleDetails: BundleGroupDetails[] = [];
@@ -19,6 +19,7 @@ export function analyzeBundleGroup(stats: BundleStats, chunkGroupIds: string[]) 
     let totalRawSize = 0;
     let totalDuplicatedSize = 0;
     let totalAssetSize = 0;
+    const assetSizesByType = new Map<string, number>();
 
     // Process each bundle in order
     for (let chunkGroupId of chunkGroupIds) {
@@ -46,6 +47,9 @@ export function analyzeBundleGroup(stats: BundleStats, chunkGroupIds: string[]) 
                 loadedAssets.add(filename);
                 netAssetSize += addedSize;
                 totalAssetSize += addedSize;
+
+                const assetType = getAssetType(filename);
+                assetSizesByType.set(assetType, (assetSizesByType.get(assetType) || 0) + addedSize);
             }
 
             // Check for duplicated code, but not in chunks that we've already loaded (we don't
@@ -83,6 +87,7 @@ export function analyzeBundleGroup(stats: BundleStats, chunkGroupIds: string[]) 
         totalAssetSize,
         totalRawSize,
         totalDuplicatedSize,
+        assetSizesByType,
     };
 }
 
@@ -112,6 +117,19 @@ function getJsAsset(chunk: Chunk) {
     }
 
     return jsAssets[0];
+}
+
+function getAssetType(filename: string) {
+    const split = filename.split('.');
+    return split.length < 2 ? 'Unknown' : split[split.length - 1].toUpperCase();
+}
+
+export interface BundleAnalysis {
+    bundleDetails: BundleGroupDetails[];
+    totalAssetSize: number;
+    totalRawSize: number;
+    totalDuplicatedSize: number;
+    assetSizesByType: Map<string, number>;
 }
 
 export interface BundleGroupDetails {
