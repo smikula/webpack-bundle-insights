@@ -1,10 +1,10 @@
-import { BundleStats, Chunk, ChunkGroup, ChunkId } from 'webpack-bundle-stats-plugin';
-import { getChunkGroupMap } from '../utils/getChunkGroupMap';
-import { getChunkMap } from '../utils/getChunkMap';
+import { Chunk, ChunkGroup, ChunkId } from 'webpack-bundle-stats-plugin';
+import { EnhancedBundleStats } from '../enhanced-bundle-stats/EnhancedBundleStats';
 
-export function analyzeBundleGroup(stats: BundleStats, chunkGroupIds: string[]): BundleAnalysis {
-    const chunkGroupMap = getChunkGroupMap(stats);
-    const chunkMap = getChunkMap(stats);
+export function analyzeBundleGroup(
+    stats: EnhancedBundleStats,
+    chunkGroupIds: string[]
+): BundleAnalysis {
     const bundleDetails: BundleGroupDetails[] = [];
 
     // Keep track of assets that are loaded as each bundle loads; only the first time an asset
@@ -23,7 +23,7 @@ export function analyzeBundleGroup(stats: BundleStats, chunkGroupIds: string[]):
 
     // Process each bundle in order
     for (let chunkGroupId of chunkGroupIds) {
-        const chunkGroup = chunkGroupMap.get(chunkGroupId)!;
+        const chunkGroup = stats.getChunkGroup(chunkGroupId)!;
 
         // Track the size of the bundle assets (netAssetSize excludes any that have already been
         // downloaded as part of an earlier bundle).  This also tracks duplcated code per asset
@@ -37,12 +37,12 @@ export function analyzeBundleGroup(stats: BundleStats, chunkGroupIds: string[]):
 
         // Process each chunk in the bundle
         for (let chunkId of chunkGroup.chunks) {
-            const chunk = chunkMap.get(chunkId)!;
+            const chunk = stats.getChunk(chunkId)!;
             const jsAsset = getJsAsset(chunk);
 
             // Accumulate chunk assets
             for (const filename of chunk.files) {
-                const addedSize = loadedAssets.has(filename) ? 0 : stats.assets[filename].size;
+                const addedSize = loadedAssets.has(filename) ? 0 : stats.getAsset(filename).size;
                 assetDetails.set(filename, { netSize: addedSize, duplicatedCode: new Map() });
                 loadedAssets.add(filename);
                 netAssetSize += addedSize;
