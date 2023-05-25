@@ -18,15 +18,15 @@ export const ChildBundleList: React.FC<ChildBundleListProps> = props => {
             return [];
         }
 
-        const chunkGroup = data.chunkGroupMap.get(selectedNode)!;
+        const chunkGroup = data.stats.getChunkGroup(selectedNode)!;
 
         // Filter out duplicate children
         const childIds = [...new Set(chunkGroup.children)];
 
         // Sort by name first, then ID
         childIds.sort((a, b) => {
-            const a2 = data.chunkGroupMap.get(a)!;
-            const b2 = data.chunkGroupMap.get(b)!;
+            const a2 = data.stats.getChunkGroup(a)!;
+            const b2 = data.stats.getChunkGroup(b)!;
             if (a2.name) {
                 return b2.name ? a2.name.localeCompare(b2.name) : -1;
             } else {
@@ -52,7 +52,7 @@ export const ChildBundleList: React.FC<ChildBundleListProps> = props => {
                 {childIds.map(c => (
                     <ChildBundle
                         key={c}
-                        chunkGroup={data!.chunkGroupMap.get(c)!}
+                        chunkGroup={data!.stats.getChunkGroup(c)!}
                         isInGraph={nodesInGraph.includes(c)}
                         onClick={onClick}
                     />
