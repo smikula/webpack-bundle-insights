@@ -1,12 +1,15 @@
 import { BundleStats } from 'webpack-bundle-stats-plugin';
 import { analyzeBundleGroup } from './analyzeBundleGroup';
+import { EnhancedBundleStats } from '../enhanced-bundle-stats/EnhancedBundleStats';
 
 export function analyzeBundles(stats: BundleStats, bundleNames?: string[]) {
+    const enhancedBundleStats = new EnhancedBundleStats(stats);
+
     const chunkGroupIds = bundleNames
         ? getChunkGroupIds(stats, bundleNames)
-        : getAllChunkGroupIds(stats);
+        : getAllChunkGroupIds(enhancedBundleStats);
 
-    return analyzeBundleGroup(stats, chunkGroupIds);
+    return analyzeBundleGroup(enhancedBundleStats, chunkGroupIds);
 }
 
 function getChunkGroupIds(stats: BundleStats, bundleNames: string[]) {
@@ -27,6 +30,6 @@ function getBundleIdFromName(stats: BundleStats, bundleName: string) {
     return filteredChunkGroups[0].id;
 }
 
-function getAllChunkGroupIds(stats: BundleStats) {
-    return [...new Set(stats.chunkGroups.map(cg => cg.id))];
+function getAllChunkGroupIds(stats: EnhancedBundleStats) {
+    return stats.getChunkGroups().map(cg => cg.id);
 }

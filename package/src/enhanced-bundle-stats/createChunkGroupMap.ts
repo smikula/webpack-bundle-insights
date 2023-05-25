@@ -3,7 +3,7 @@ import { BundleStats, ChunkGroup } from 'webpack-bundle-stats-plugin';
 
 export type ChunkGroupMap = Map<string, ChunkGroup>;
 
-export function getChunkGroupMap(stats: BundleStats): ChunkGroupMap {
+export function createChunkGroupMap(stats: BundleStats) {
     const chunkGroupMap: ChunkGroupMap = new Map();
     for (let cg of stats.chunkGroups) {
         if (chunkGroupMap.has(cg.id)) {

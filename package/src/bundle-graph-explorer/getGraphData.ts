@@ -1,18 +1,17 @@
 import { Data, Edge, Node } from 'vis-network';
 import { DataSet } from 'vis-data';
-import { BundleStats, ChunkGroup } from 'webpack-bundle-stats-plugin';
-import { getChunkGroupMap } from '../utils/getChunkGroupMap';
+import { BundleStats } from 'webpack-bundle-stats-plugin';
 import { getEntryBundles } from './getEntryBundles';
+import { EnhancedBundleStats } from '../enhanced-bundle-stats/EnhancedBundleStats';
 
 export interface GraphData {
-    chunkGroupMap: Map<string, ChunkGroup>;
-    stats: BundleStats;
+    stats: EnhancedBundleStats;
     visData: Data;
 }
 
 export function getGraphData(stats: BundleStats): GraphData {
-    const chunkGroupMap = getChunkGroupMap(stats);
-    const entryBundles = getEntryBundles(chunkGroupMap);
+    const enhancedStats = new EnhancedBundleStats(stats);
+    const entryBundles = getEntryBundles(enhancedStats);
 
     const initialNodes = [...entryBundles].map<Node>(cg => ({
         id: cg.id,
@@ -24,8 +23,7 @@ export function getGraphData(stats: BundleStats): GraphData {
     nodes.add(initialNodes);
 
     return {
-        chunkGroupMap,
-        stats,
+        stats: enhancedStats,
         visData: { nodes, edges },
     };
 }

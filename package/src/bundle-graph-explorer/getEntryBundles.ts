@@ -1,7 +1,9 @@
-import type { ChunkGroupMap } from '../utils/getChunkGroupMap';
+import { EnhancedBundleStats } from '../enhanced-bundle-stats/EnhancedBundleStats';
 
-export function getEntryBundles(chunkGroupMap: ChunkGroupMap) {
-    return [...chunkGroupMap.values()].filter(
-        cg => cg.chunkGroupType === 'Entrypoint' && cg.name && !cg.name.includes('node_modules')
-    );
+export function getEntryBundles(stats: EnhancedBundleStats) {
+    return stats
+        .getChunkGroups()
+        .filter(
+            cg => cg.chunkGroupType === 'Entrypoint' && cg.name && !cg.name.includes('node_modules')
+        );
 }
