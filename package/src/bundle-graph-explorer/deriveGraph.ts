@@ -10,6 +10,7 @@ export function deriveGraph(stats: EnhancedBundleStats, chunkGroupsToShow: strin
         chunkGroupsToShow = getEntryBundleIds(stats);
     }
 
+    // Add each chunk group as a node
     for (let chunkGroupId of chunkGroupsToShow) {
         const chunkGroup = stats.getChunkGroup(chunkGroupId)!;
         nodes.push({
@@ -17,6 +18,7 @@ export function deriveGraph(stats: EnhancedBundleStats, chunkGroupsToShow: strin
             label: chunkGroup.name || chunkGroup.id,
         });
 
+        // Add edges to nodes that are in the graph
         for (let childId of chunkGroup.children) {
             if (chunkGroupsToShow.includes(childId)) {
                 const edgeId = `${chunkGroupId}->${childId}`;
