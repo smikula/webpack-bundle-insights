@@ -1,32 +1,31 @@
 import React, { useCallback, useMemo } from 'react';
-import { GraphData } from '../getGraphData';
 import { ChunkGroup } from 'webpack-bundle-stats-plugin';
-import { addChunkGroupToGraph } from '../addChunkGroupToGraph';
+import { EnhancedBundleStats } from '../../enhanced-bundle-stats/EnhancedBundleStats';
 
 export interface ChildBundleListProps {
-    data: GraphData;
+    stats: EnhancedBundleStats;
     selectedNode: string | undefined;
     nodesInGraph: string[];
     onNodeAdded: (chunkGroupId: string) => void;
 }
 
 export const ChildBundleList: React.FC<ChildBundleListProps> = props => {
-    const { data, selectedNode, nodesInGraph, onNodeAdded } = props;
+    const { stats, selectedNode, nodesInGraph, onNodeAdded } = props;
 
     const childIds = useMemo(() => {
-        if (!data || !selectedNode) {
+        if (!stats || !selectedNode) {
             return [];
         }
 
-        const chunkGroup = data.stats.getChunkGroup(selectedNode)!;
+        const chunkGroup = stats.getChunkGroup(selectedNode)!;
 
         // Filter out duplicate children
         const childIds = [...new Set(chunkGroup.children)];
 
         // Sort by name first, then ID
         childIds.sort((a, b) => {
-            const a2 = data.stats.getChunkGroup(a)!;
-            const b2 = data.stats.getChunkGroup(b)!;
+            const a2 = stats.getChunkGroup(a)!;
+            const b2 = stats.getChunkGroup(b)!;
             if (a2.name) {
                 return b2.name ? a2.name.localeCompare(b2.name) : -1;
             } else {
@@ -35,14 +34,13 @@ export const ChildBundleList: React.FC<ChildBundleListProps> = props => {
         });
 
         return childIds;
-    }, [data, selectedNode]);
+    }, [stats, selectedNode]);
 
     const onClick = useCallback(
         (chunkGroupId: string) => {
-            addChunkGroupToGraph(data!, chunkGroupId, selectedNode!);
             onNodeAdded(chunkGroupId);
         },
-        [data, selectedNode, onNodeAdded]
+        [onNodeAdded]
     );
 
     return (
@@ -52,7 +50,7 @@ export const ChildBundleList: React.FC<ChildBundleListProps> = props => {
                 {childIds.map(c => (
                     <ChildBundle
                         key={c}
-                        chunkGroup={data!.stats.getChunkGroup(c)!}
+                        chunkGroup={stats.getChunkGroup(c)!}
                         isInGraph={nodesInGraph.includes(c)}
                         onClick={onClick}
                     />

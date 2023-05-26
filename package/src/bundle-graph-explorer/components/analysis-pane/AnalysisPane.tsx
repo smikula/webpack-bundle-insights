@@ -1,20 +1,20 @@
 import React, { useMemo } from 'react';
-import { GraphData } from '../../getGraphData';
 import { analyzeBundleGroup } from '../../../analysis/analyzeBundleGroup';
 import { BundleDetails } from './BundleDetails';
 import { TotalDetails } from './TotalDetails';
+import { EnhancedBundleStats } from '../../../enhanced-bundle-stats/EnhancedBundleStats';
 
 interface AnalysisPaneProps {
-    graphData: GraphData;
+    stats: EnhancedBundleStats;
     nodesInGraph: string[];
 }
 
 export const AnalysisPane: React.FC<AnalysisPaneProps> = props => {
-    const { graphData, nodesInGraph } = props;
+    const { stats, nodesInGraph } = props;
 
     const bundleAnalysis = useMemo(
-        () => analyzeBundleGroup(graphData.stats, nodesInGraph),
-        [graphData, nodesInGraph]
+        () => analyzeBundleGroup(stats, nodesInGraph),
+        [stats, nodesInGraph]
     );
 
     return (
