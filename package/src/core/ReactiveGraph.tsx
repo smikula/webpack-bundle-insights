@@ -2,11 +2,13 @@ import React, { CSSProperties, useEffect, useRef } from 'react';
 import { DataSet, DELETE } from 'vis-data';
 import { Options, Network, Node, Edge, Data, IdType } from 'vis-network';
 
+export type ClickHandler = (params?: any) => void;
+
 export interface ReactiveGraphProps {
     nodes: Node[];
     edges: Edge[];
     options: Options;
-    onClick?: (params?: any) => void;
+    onClick?: ClickHandler;
 }
 
 const graphStyles: CSSProperties = {
@@ -19,23 +21,39 @@ const graphStyles: CSSProperties = {
 
 export const ReactiveGraph: React.FC<ReactiveGraphProps> = props => {
     const { nodes, edges, options, onClick } = props;
+    const onClickRef = useRef<ClickHandler | undefined>(undefined);
+    const networkRef = useRef<Network | undefined>(undefined);
     const divRef = useRef<HTMLDivElement>(null);
-    const dataRef = useRef<Data | null>(null);
 
-    // Initialize the network on mount
+    const dataRef = useRef<Data>({
+        nodes: new DataSet<Node>({}),
+        edges: new DataSet<Edge>({}),
+    });
+
+    // Initialize the network at mount
     useEffect(() => {
-        if (divRef.current) {
-            dataRef.current = {
-                nodes: new DataSet<Node>({}),
-                edges: new DataSet<Edge>({}),
-            };
-
-            const network = new Network(divRef.current, dataRef.current, props.options);
-            if (props.onClick) {
-                network.on('click', props.onClick);
-            }
+        if (!networkRef.current) {
+            networkRef.current = new Network(divRef.current!, dataRef.current, props.options);
+        } else {
+            networkRef.current.setOptions(options);
         }
-    }, [options, onClick]);
+    }, [options]);
+
+    // Keep the onClick callback up to date
+    useEffect(() => {
+        // Remove the old click handler
+        const network = networkRef.current!;
+        if (onClickRef.current) {
+            network.off('click', onClickRef.current);
+        }
+
+        // Add the new handler
+        if (onClick) {
+            network.on('click', onClick);
+        }
+
+        onClickRef.current = onClick;
+    });
 
     // Reconcile nodes and edges any time they change
     useEffect(() => {
