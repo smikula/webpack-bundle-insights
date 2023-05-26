@@ -2,6 +2,10 @@ import { DataSet } from 'vis-data';
 import { Edge, Node } from 'vis-network';
 import { GraphData } from './getGraphData';
 
+// TODO:
+//  [ ] simply add the selected node to the list
+//  [ ] When deriving the graph, account for nodes + edges
+//  [ ] remove this
 export function addChunkGroupToGraph(graphData: GraphData, chunkGroupId: string, parentId: string) {
     const nodes = graphData.visData.nodes as DataSet<Node>;
     const edges = graphData.visData.edges as DataSet<Edge>;

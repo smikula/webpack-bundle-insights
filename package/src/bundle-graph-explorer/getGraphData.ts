@@ -9,6 +9,10 @@ export interface GraphData {
     visData: Data;
 }
 
+// TODO:
+// [ ] When deriving graph, if no nodes selected, show initial nodes
+// [ ] Create enhancedStats separately
+// [ ] Remove this
 export function getGraphData(stats: BundleStats): GraphData {
     const enhancedStats = new EnhancedBundleStats(stats);
     const entryBundles = getEntryBundles(enhancedStats);

@@ -1,5 +1,6 @@
 import { EnhancedBundleStats } from '../enhanced-bundle-stats/EnhancedBundleStats';
 
+// TODO: remove this
 export function getEntryBundles(stats: EnhancedBundleStats) {
     return stats
         .getChunkGroups()
