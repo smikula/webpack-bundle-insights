@@ -1,10 +1,10 @@
 import React, { useState, CSSProperties } from 'react';
-import { GraphData } from '../getGraphData';
 import { ChildBundleList } from './ChildBundleList';
 import { AnalysisPane } from './analysis-pane/AnalysisPane';
+import { EnhancedBundleStats } from '../../enhanced-bundle-stats/EnhancedBundleStats';
 
 export interface InfoPaneProps {
-    graphData: GraphData;
+    stats: EnhancedBundleStats;
     selectedNode: string | undefined;
     nodesInGraph: string[];
     onNodeAdded: (chunkGroupId: string) => void;
@@ -26,7 +26,7 @@ const tabStyles: CSSProperties = {
 };
 
 export const InfoPane: React.FC<InfoPaneProps> = props => {
-    const { graphData, selectedNode } = props;
+    const { stats, selectedNode } = props;
     const [paneState, setPaneState] = useState<PaneState>('LOAD');
 
     return (
@@ -43,7 +43,7 @@ export const InfoPane: React.FC<InfoPaneProps> = props => {
 
             {paneState === 'LOAD' && (
                 <ChildBundleList
-                    data={graphData}
+                    stats={stats}
                     selectedNode={selectedNode}
                     nodesInGraph={props.nodesInGraph}
                     onNodeAdded={props.onNodeAdded}
@@ -51,7 +51,7 @@ export const InfoPane: React.FC<InfoPaneProps> = props => {
             )}
 
             {paneState === 'ANALYZE' && (
-                <AnalysisPane graphData={graphData} nodesInGraph={props.nodesInGraph} />
+                <AnalysisPane stats={stats} nodesInGraph={props.nodesInGraph} />
             )}
         </div>
     );

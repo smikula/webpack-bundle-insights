@@ -1,12 +1,12 @@
-import React, { useCallback, useEffect, useReducer, useState } from 'react';
+import React, { useCallback, useEffect, useReducer, useState, useMemo } from 'react';
 import type { Options } from 'vis-network';
 import type { BundleStats } from 'webpack-bundle-stats-plugin';
-import { Graph } from '../../core/Graph';
-import { GraphData, getGraphData } from '../getGraphData';
 import { InfoPane } from './InfoPane';
-import { removeOtherEntryBundleNodes } from '../removeOtherEntryBundleNodes';
 import { InvalidVersionWarning } from '../../core/InvalidVersionWarning';
 import { isSupported } from '../../core/isSupported';
+import { ReactiveGraph } from '../../core/ReactiveGraph';
+import { EnhancedBundleStats } from '../../enhanced-bundle-stats/EnhancedBundleStats';
+import { getGraphDataV2 } from '../getGraphDataV2';
 
 export interface BundleGraphExplorerProps {
     stats?: BundleStats;
@@ -31,18 +31,26 @@ const graphOptions: Options = {
 };
 
 export const BundleGraphExplorer: React.FC<BundleGraphExplorerProps> = props => {
-    const { stats, className } = props;
-    const [graphData, setGraphData] = useState<GraphData | undefined>(undefined);
+    const [stats, setStats] = useState<EnhancedBundleStats | undefined>(undefined);
     const [selectedNode, setSelectedNode] = useState<string | undefined>(undefined);
     const [nodesInGraph, addNodeInGraph] = useReducer(
         (state: string[], action: string) => [...state, action],
         []
     );
 
-    // Recreate the graphData state every time we get new stats
+    // Recreate the enhanced stats every time we get new bundle stats
     useEffect(() => {
-        setGraphData(stats && getGraphData(stats));
-    }, [stats]);
+        setStats(props.stats && new EnhancedBundleStats(props.stats));
+    }, [props.stats]);
+
+    // Derive the graph we want to show
+    const { nodes, edges } = useMemo(() => {
+        if (stats) {
+            return getGraphDataV2(stats, nodesInGraph);
+        } else {
+            return { nodes: [], edges: [] };
+        }
+    }, [stats, nodesInGraph]);
 
     // Handle clicks on nodes
     const onClick = useCallback(
@@ -52,28 +60,32 @@ export const BundleGraphExplorer: React.FC<BundleGraphExplorerProps> = props => 
                 const chunkGroupId = params.nodes[0];
                 setSelectedNode(chunkGroupId);
 
-                // If this is the first node selected, remove the other entry nodes
+                // If this is the first node selected, add it to the graph
                 if (nodesInGraph.length === 0) {
                     addNodeInGraph(chunkGroupId);
-                    removeOtherEntryBundleNodes(graphData!, chunkGroupId);
                 }
             }
         },
-        [graphData, nodesInGraph]
+        [nodesInGraph]
     );
 
-    const isInvalidVersion = stats && !isSupported(stats, SUPPORTED_RANGE);
+    const isInvalidVersion = stats && !isSupported(stats.stats, SUPPORTED_RANGE);
 
     return (
-        <div className={className}>
+        <div className={props.className}>
             {isInvalidVersion ? (
                 <InvalidVersionWarning validRange={SUPPORTED_RANGE} />
             ) : (
                 <>
-                    <Graph options={graphOptions} data={graphData?.visData} onClick={onClick} />
-                    {graphData && (
+                    <ReactiveGraph
+                        nodes={nodes}
+                        edges={edges}
+                        options={graphOptions}
+                        onClick={onClick}
+                    />
+                    {stats && (
                         <InfoPane
-                            graphData={graphData}
+                            stats={stats}
                             selectedNode={selectedNode}
                             nodesInGraph={nodesInGraph}
                             onNodeAdded={addNodeInGraph}
