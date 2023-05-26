@@ -41,7 +41,7 @@ export const ReactiveGraph: React.FC<ReactiveGraphProps> = props => {
     useEffect(() => {
         if (dataRef.current) {
             reconcile(nodes, dataRef.current.nodes as DataSet<Node>);
-            reconcile(edges, dataRef.current.nodes as DataSet<Edge>);
+            reconcile(edges, dataRef.current.edges as DataSet<Edge>);
         }
     }, [nodes, edges]);
 
