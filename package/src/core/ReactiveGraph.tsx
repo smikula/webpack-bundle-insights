@@ -57,9 +57,19 @@ export const ReactiveGraph: React.FC<ReactiveGraphProps> = props => {
 
     // Reconcile nodes and edges any time they change
     useEffect(() => {
-        if (dataRef.current) {
-            reconcile(nodes, dataRef.current.nodes as DataSet<Node>);
-            reconcile(edges, dataRef.current.edges as DataSet<Edge>);
+        const initialNodeCount = dataRef.current.nodes!.length;
+        reconcile(nodes, dataRef.current.nodes as DataSet<Node>);
+        reconcile(edges, dataRef.current.edges as DataSet<Edge>);
+
+        // There seems to be a bug in vis-network where nodes added to an empty graph are initially
+        // invisible; calling focus seems to nudge them to show up
+        if (!initialNodeCount && nodes.length) {
+            setTimeout(() => {
+                if (dataRef.current?.nodes?.length) {
+                    const nodes = dataRef.current.nodes as DataSet<Node>;
+                    networkRef.current!.focus(nodes.getIds()[0]);
+                }
+            }, 100);
         }
     }, [nodes, edges]);
 
