@@ -1,8 +1,7 @@
 import { Edge, Node } from 'vis-network';
 import { EnhancedBundleStats } from '../enhanced-bundle-stats/EnhancedBundleStats';
 
-// TODO: Rename
-export function getGraphDataV2(stats: EnhancedBundleStats, chunkGroupsToShow: string[]) {
+export function deriveGraph(stats: EnhancedBundleStats, chunkGroupsToShow: string[]) {
     const nodes: Node[] = [];
     const edges: Edge[] = [];
 

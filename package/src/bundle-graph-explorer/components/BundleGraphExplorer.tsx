@@ -6,7 +6,7 @@ import { InvalidVersionWarning } from '../../core/InvalidVersionWarning';
 import { isSupported } from '../../core/isSupported';
 import { ReactiveGraph } from '../../core/ReactiveGraph';
 import { EnhancedBundleStats } from '../../enhanced-bundle-stats/EnhancedBundleStats';
-import { getGraphDataV2 } from '../getGraphDataV2';
+import { deriveGraph } from '../deriveGraph';
 
 export interface BundleGraphExplorerProps {
     stats?: BundleStats;
@@ -46,7 +46,7 @@ export const BundleGraphExplorer: React.FC<BundleGraphExplorerProps> = props => 
     // Derive the graph we want to show
     const { nodes, edges } = useMemo(() => {
         if (stats) {
-            return getGraphDataV2(stats, nodesInGraph);
+            return deriveGraph(stats, nodesInGraph);
         } else {
             return { nodes: [], edges: [] };
         }
