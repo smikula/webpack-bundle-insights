@@ -19,7 +19,7 @@ export function analyzeBundleGroup(
     let totalRawSize = 0;
     let totalDuplicatedSize = 0;
     let totalAssetSize = 0;
-    const assetSizesByType = new Map<string, number>();
+    const assetSizesByType = new Map<string, AssetTotals>();
 
     // Process each bundle in order
     for (let chunkGroupId of chunkGroupIds) {
@@ -48,8 +48,15 @@ export function analyzeBundleGroup(
                 netAssetSize += addedSize;
                 totalAssetSize += addedSize;
 
+                // Keep track of totals per asset type
                 const assetType = getAssetType(filename);
-                assetSizesByType.set(assetType, (assetSizesByType.get(assetType) || 0) + addedSize);
+                if (!assetSizesByType.has(assetType)) {
+                    assetSizesByType.set(assetType, { count: 0, size: 0 });
+                }
+
+                const assetTotals =  assetSizesByType.get(assetType)!
+                assetTotals.size += addedSize;
+                assetTotals.count += 1;
             }
 
             // Check for duplicated code, but not in chunks that we've already loaded (we don't
@@ -129,7 +136,7 @@ export interface BundleAnalysis {
     totalAssetSize: number;
     totalRawSize: number;
     totalDuplicatedSize: number;
-    assetSizesByType: Map<string, number>;
+    assetSizesByType: Map<string, AssetTotals>;
 }
 
 export interface BundleGroupDetails {
@@ -143,4 +150,9 @@ export interface BundleGroupDetails {
 export interface AssetDetails {
     netSize: number;
     duplicatedCode: Map<string, number>; // moduleId -> raw size
+}
+
+export interface AssetTotals {
+    count: number;
+    size: number;
 }
