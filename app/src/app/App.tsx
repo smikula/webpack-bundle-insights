@@ -11,7 +11,7 @@ export const App: React.FC<{}> = () => {
 
     return (
         <>
-            {mode == 'explore' ? <BundleGraphExplorerPane /> : null}
+            {mode === 'explore' ? <BundleGraphExplorerPane /> : null}
             <select className="selector" onChange={onSelectMode}>
                 <option value="none">Select mode</option>
                 <option value="explore">Bundle graph explorer</option>
