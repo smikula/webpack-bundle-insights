@@ -17,7 +17,7 @@ export const BundleGraphExplorerPane: React.FC<{}> = () => {
 
     return (
         <div className="container">
-            <div className="sidebar">
+            <div className="picker">
                 <StatsPicker onFileChanged={onFileChanged} />
             </div>
             <BundleGraphExplorer stats={stats} className="graph" />
