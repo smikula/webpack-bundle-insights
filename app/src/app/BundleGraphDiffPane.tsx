@@ -26,7 +26,11 @@ export const BundleGraphDiffPane: React.FC<{}> = () => {
                     <StatsPicker onFileChanged={onComparisonFileChanged} />
                 </div>
             </div>
-            <BundleGraphDiff />
+            <BundleGraphDiff
+                className="graph"
+                baselineStats={baselineStats}
+                comparisonStats={comparisonStats}
+            />
         </div>
     );
 };
