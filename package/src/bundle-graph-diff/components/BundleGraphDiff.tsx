@@ -5,6 +5,7 @@ import { InvalidVersionWarning } from '../../core/InvalidVersionWarning';
 import { isSupported } from '../../core/isSupported';
 import { ReactiveGraph } from '../../core/ReactiveGraph';
 import { useEnhancedBundleStats } from '../../hooks/useEnhancedStats';
+import { deriveGraphDiff } from '../deriveGraphDiff';
 
 export interface BundleGraphDiffProps {
     baselineStats: BundleStats | undefined;
@@ -36,7 +37,7 @@ export const BundleGraphDiff: React.FC<BundleGraphDiffProps> = props => {
     // Derive the graph we want to show
     const { nodes, edges } = useMemo(() => {
         if (statsA && statsB) {
-            return { nodes: [], edges: [] }; // TODO
+            return deriveGraphDiff(statsA, statsB);
         } else {
             return { nodes: [], edges: [] };
         }
