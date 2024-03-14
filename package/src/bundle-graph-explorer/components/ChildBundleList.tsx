@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
-import { ChunkGroup } from 'webpack-bundle-stats-plugin';
 import { EnhancedBundleStats } from '../../enhanced-bundle-stats/EnhancedBundleStats';
+import { EnhancedChunkGroup } from '../../enhanced-bundle-stats/EnhancedChunkGroup';
 
 export interface ChildBundleListProps {
     stats: EnhancedBundleStats;
@@ -20,7 +20,7 @@ export const ChildBundleList: React.FC<ChildBundleListProps> = props => {
         const chunkGroup = stats.getChunkGroup(selectedNode)!;
 
         // Filter out duplicate children
-        const childIds = [...new Set(chunkGroup.children)];
+        const childIds = [...new Set(chunkGroup.children.map(c => c.id))];
 
         // Sort by name first, then ID
         childIds.sort((a, b) => {
@@ -61,7 +61,7 @@ export const ChildBundleList: React.FC<ChildBundleListProps> = props => {
 };
 
 interface ChildBundleProps {
-    chunkGroup: ChunkGroup;
+    chunkGroup: EnhancedChunkGroup;
     isInGraph: boolean;
     onClick: (chunkGroupId: string) => void;
 }

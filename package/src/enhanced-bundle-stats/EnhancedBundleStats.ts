@@ -8,7 +8,7 @@ export class EnhancedBundleStats {
 
     constructor(public stats: BundleStats) {
         this.chunkMap = createChunkMap(stats);
-        this.chunkGroupMap = createChunkGroupMap(stats);
+        this.chunkGroupMap = createChunkGroupMap(stats, this);
     }
 
     getAsset(filename: string) {
