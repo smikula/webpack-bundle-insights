@@ -10,7 +10,7 @@ export function createChunkGroupMap(stats: BundleStats, enhancedStats: EnhancedB
     for (let cg of stats.chunkGroups) {
         if (chunkGroupMap.has(cg.id)) {
             // Sanity check that these actually are duplicates
-            if (!deepEqual(cg, chunkGroupMap.get(cg.id))) {
+            if (!deepEqual(cg, chunkGroupMap.get(cg.id)?.rawChunkGroup)) {
                 throw new Error(`Found different chunk groups with same id (${cg.id})`);
             }
 
