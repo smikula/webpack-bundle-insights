@@ -2,7 +2,6 @@ import React from 'react';
 import { BundleStats } from 'webpack-bundle-stats-plugin';
 import { BundleGraphExplorer } from 'webpack-bundle-insights';
 import { StatsPicker } from '../components/StatsPicker';
-import './BundleGraphExplorerPane.css';
 
 export const BundleGraphExplorerPane: React.FC<{}> = () => {
     const [stats, setStats] = React.useState<BundleStats>();
@@ -17,8 +16,10 @@ export const BundleGraphExplorerPane: React.FC<{}> = () => {
 
     return (
         <div className="container">
-            <div className="picker">
-                <StatsPicker onFileChanged={onFileChanged} />
+            <div className="pickers">
+                <div>
+                    <StatsPicker onFileChanged={onFileChanged} />
+                </div>
             </div>
             <BundleGraphExplorer stats={stats} className="graph" />
         </div>

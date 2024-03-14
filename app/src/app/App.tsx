@@ -1,7 +1,7 @@
 import React from 'react';
 import { BundleGraphExplorerPane } from './BundleGraphExplorerPane';
 import { BundleGraphDiffPane } from './BundleGraphDiffPane';
-import './App.css';
+import './styles.css';
 
 export const App: React.FC<{}> = () => {
     const [mode, setMode] = React.useState('none');

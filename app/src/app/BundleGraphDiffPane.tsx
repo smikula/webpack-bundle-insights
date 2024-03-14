@@ -2,7 +2,6 @@ import React from 'react';
 import { BundleStats } from 'webpack-bundle-stats-plugin';
 import { BundleGraphDiff } from 'webpack-bundle-insights';
 import { StatsPicker } from '../components/StatsPicker';
-import './BundleGraphDiffPane.css';
 
 export const BundleGraphDiffPane: React.FC<{}> = () => {
     const [baselineStats, setBaselineStats] = React.useState<BundleStats>();
