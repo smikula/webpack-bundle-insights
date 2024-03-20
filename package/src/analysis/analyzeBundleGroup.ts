@@ -54,7 +54,7 @@ export function analyzeBundleGroup(
                     assetSizesByType.set(assetType, { count: 0, size: 0 });
                 }
 
-                const assetTotals =  assetSizesByType.get(assetType)!
+                const assetTotals = assetSizesByType.get(assetType)!;
                 assetTotals.size += addedSize;
                 assetTotals.count += 1;
             }
@@ -81,7 +81,7 @@ export function analyzeBundleGroup(
         }
 
         bundleDetails.push({
-            chunkGroup,
+            chunkGroup: chunkGroup.rawChunkGroup,
             assetDetails,
             netAssetSize,
             rawSize,
