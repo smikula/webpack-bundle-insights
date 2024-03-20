@@ -15,7 +15,6 @@ function createDiffGraph(statsA: EnhancedBundleStats, statsB: EnhancedBundleStat
     // We're only going to deal with named chunk groups
     const names = new Set([...statsA.getChunkGroupNames(), ...statsB.getChunkGroupNames()]);
     for (const name of names) {
-        // Diff the edges (filtering out edges to unnamed nodes)
         const cgA = statsA.getChunkGroupByName(name);
         const cgB = statsB.getChunkGroupByName(name);
 
@@ -45,7 +44,7 @@ function createDiffGraph(statsA: EnhancedBundleStats, statsB: EnhancedBundleStat
 
 function createEdges(chunkGroup: EnhancedChunkGroup, change: 'added' | 'removed') {
     // Filter out unnamed children and duplicates
-    const children = [...new Set(chunkGroup.children.map(cg => cg.name).filter(child => child))];
+    const children = [...new Set(chunkGroup.children.map(cg => cg.name).filter(name => name))];
 
     // Create edges
     return children.map(child => ({ child, change } as DiffEdge));
@@ -79,7 +78,7 @@ function diffEdges(
 
 function getNamedChildren(chunkGroup: EnhancedChunkGroup | undefined): Set<string> {
     return new Set(
-        chunkGroup ? (chunkGroup.children.map(cg => cg.name).filter(n => n) as string[]) : []
+        chunkGroup ? (chunkGroup.children.map(cg => cg.name).filter(name => name) as string[]) : []
     );
 }
 
@@ -107,6 +106,7 @@ function createVizGraph(diffGraph: DiffGraph, nodesToShow: Set<string>) {
     const edges: Edge[] = [];
     const nodes: Node[] = [];
 
+    // Add each node
     for (const nodeName of nodesToShow) {
         const node = diffGraph.get(nodeName)!;
         nodes.push({
@@ -116,7 +116,7 @@ function createVizGraph(diffGraph: DiffGraph, nodesToShow: Set<string>) {
             title: 'yo',
         });
 
-        // Render edges between shown nodes
+        // Add edges between shown nodes
         for (const edge of node.edges) {
             if (nodesToShow.has(edge.child)) {
                 const edgeId = `${nodeName}->${edge.child}`;
