@@ -1,12 +1,12 @@
-import React, { useCallback, useEffect, useReducer, useState, useMemo } from 'react';
+import React, { useCallback, useReducer, useState, useMemo } from 'react';
 import type { Options } from 'vis-network';
 import type { BundleStats } from 'webpack-bundle-stats-plugin';
 import { InfoPane } from './InfoPane';
 import { InvalidVersionWarning } from '../../core/InvalidVersionWarning';
 import { isSupported } from '../../core/isSupported';
 import { ReactiveGraph } from '../../core/ReactiveGraph';
-import { EnhancedBundleStats } from '../../enhanced-bundle-stats/EnhancedBundleStats';
 import { deriveGraph } from '../deriveGraph';
+import { useEnhancedBundleStats } from '../../hooks/useEnhancedStats';
 
 export interface BundleGraphExplorerProps {
     stats?: BundleStats;
@@ -31,17 +31,12 @@ const graphOptions: Options = {
 };
 
 export const BundleGraphExplorer: React.FC<BundleGraphExplorerProps> = props => {
-    const [stats, setStats] = useState<EnhancedBundleStats | undefined>(undefined);
+    const stats = useEnhancedBundleStats(props.stats);
     const [selectedNode, setSelectedNode] = useState<string | undefined>(undefined);
     const [nodesInGraph, addNodeInGraph] = useReducer(
         (state: string[], action: string) => [...state, action],
         []
     );
-
-    // Recreate the enhanced stats every time we get new bundle stats
-    useEffect(() => {
-        setStats(props.stats && new EnhancedBundleStats(props.stats));
-    }, [props.stats]);
 
     // Derive the graph we want to show
     const { nodes, edges } = useMemo(() => {

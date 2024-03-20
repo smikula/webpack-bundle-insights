@@ -1,14 +1,17 @@
 import { BundleStats, ChunkId } from 'webpack-bundle-stats-plugin';
-import { ChunkGroupMap, createChunkGroupMap } from './createChunkGroupMap';
+import { ChunkGroupMap, createChunkGroupMaps } from './createChunkGroupMaps';
 import { ChunkMap, createChunkMap } from './createChunkMap';
 
 export class EnhancedBundleStats {
     private chunkMap: ChunkMap;
-    private chunkGroupMap: ChunkGroupMap;
+    private chunkGroupIdMap: ChunkGroupMap;
+    private chunkGroupNameMap: ChunkGroupMap;
 
     constructor(public stats: BundleStats) {
         this.chunkMap = createChunkMap(stats);
-        this.chunkGroupMap = createChunkGroupMap(stats);
+        const { idMap, nameMap } = createChunkGroupMaps(stats, this);
+        this.chunkGroupIdMap = idMap;
+        this.chunkGroupNameMap = nameMap;
     }
 
     getAsset(filename: string) {
@@ -24,14 +27,22 @@ export class EnhancedBundleStats {
     }
 
     hasChunkGroup(id: string) {
-        return this.chunkGroupMap.has(id);
+        return this.chunkGroupIdMap.has(id);
     }
 
     getChunkGroup(id: string) {
-        return this.chunkGroupMap.get(id);
+        return this.chunkGroupIdMap.get(id);
+    }
+
+    getChunkGroupByName(name: string) {
+        return this.chunkGroupNameMap.get(name);
     }
 
     getChunkGroups() {
-        return [...this.chunkGroupMap.values()];
+        return [...this.chunkGroupIdMap.values()];
+    }
+
+    getChunkGroupNames() {
+        return [...this.chunkGroupNameMap.keys()];
     }
 }

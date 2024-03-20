@@ -15,17 +15,17 @@ export function deriveGraph(stats: EnhancedBundleStats, chunkGroupsToShow: strin
         const chunkGroup = stats.getChunkGroup(chunkGroupId)!;
         nodes.push({
             id: chunkGroupId,
-            label: chunkGroup.name || chunkGroup.id,
+            label: chunkGroup.readableName,
         });
 
         // Add edges to nodes that are in the graph
-        for (let childId of chunkGroup.children) {
-            if (chunkGroupsToShow.includes(childId)) {
-                const edgeId = `${chunkGroupId}->${childId}`;
+        for (let child of chunkGroup.children) {
+            if (chunkGroupsToShow.includes(child.id)) {
+                const edgeId = `${chunkGroupId}->${child.id}`;
                 edges.push({
                     id: edgeId,
                     from: chunkGroupId,
-                    to: childId,
+                    to: child.id,
                 });
             }
         }
