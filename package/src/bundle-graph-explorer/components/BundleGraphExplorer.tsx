@@ -13,7 +13,7 @@ export interface BundleGraphExplorerProps {
     className?: string;
 }
 
-const SUPPORTED_RANGE = '~0.3.0';
+const SUPPORTED_RANGE = '>0.3.0';
 
 const graphOptions: Options = {
     layout: {
